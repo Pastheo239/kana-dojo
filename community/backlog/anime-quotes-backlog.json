@@ -807,7 +807,7 @@
     "anime": "One Piece",
     "character": "Charlotte Linlin (Big Mom)",
     "issued": false,
-    "completed": false
+    "completed": true
   },
   {
     "id": 82,
@@ -956,7 +956,7 @@
     "english": "I will become the god of the new world. (alt wording 44)",
     "anime": "Death Note",
     "character": "Light Yagami",
-    "issued": false,
+    "issued": true,
     "completed": false
   },
   {

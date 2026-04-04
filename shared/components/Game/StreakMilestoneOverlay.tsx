@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Star } from 'lucide-react';
 import { useHasFinePointer } from '@/shared/hooks/generic/useHasFinePointer';
+import { cn } from '@/shared/lib/utils';
 
 interface StreakMilestoneOverlayProps {
   milestone: number | null;
@@ -47,7 +48,12 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring' as const, stiffness: 280, damping: 24, mass: 0.9 },
+    transition: {
+      type: 'spring' as const,
+      stiffness: 280,
+      damping: 24,
+      mass: 0.9,
+    },
   },
 };
 
@@ -56,6 +62,39 @@ export default function StreakMilestoneOverlay({
   onDismiss,
 }: StreakMilestoneOverlayProps) {
   const hasFinePointer = useHasFinePointer();
+
+  useEffect(() => {
+    if (!milestone) return;
+
+    const absorbKeyboardEvent = (event: KeyboardEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      absorbKeyboardEvent(event);
+      onDismiss();
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      absorbKeyboardEvent(event);
+    };
+
+    const handleKeyPress = (event: KeyboardEvent) => {
+      absorbKeyboardEvent(event);
+    };
+
+    window.addEventListener('keydown', handleKeyDown, true);
+    window.addEventListener('keyup', handleKeyUp, true);
+    window.addEventListener('keypress', handleKeyPress, true);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true);
+      window.removeEventListener('keyup', handleKeyUp, true);
+      window.removeEventListener('keypress', handleKeyPress, true);
+    };
+  }, [milestone, onDismiss]);
 
   useEffect(() => {
     if (!milestone) return;
@@ -104,14 +143,17 @@ export default function StreakMilestoneOverlay({
           >
             <motion.div
               variants={itemVariants}
-              className='inline-flex h-24 w-24 items-center justify-center rounded-2xl bg-(--secondary-color) border-b-8 border-(--secondary-color-accent) text-(--background-color) transition-all duration-200'
+              className={cn(
+                'inline-flex h-24 w-24 items-center justify-center rounded-4xl border-b-16 border-(--secondary-color-accent) bg-(--secondary-color) text-(--background-color) transition-all duration-200',
+                'motion-safe:animate-float [--float-distance:-5px]',
+              )}
             >
-              <Star className='h-14 w-14 animate-spin' strokeWidth={2.5} />
+              <Star className='h-14 w-14' strokeWidth={2.5} />
             </motion.div>
 
             <motion.h2
               variants={itemVariants}
-              className='text-4xl font-black tracking-tighter text-(--main-color) sm:text-5xl'
+              className='text-4xl font-bold tracking-tighter text-(--main-color) sm:text-5xl'
             >
               {milestone} in a row!
             </motion.h2>
@@ -125,9 +167,9 @@ export default function StreakMilestoneOverlay({
 
             <motion.p
               variants={itemVariants}
-              className='pt-2 text-sm text-(--secondary-color) opacity-50 sm:text-base'
+              className='text-sm text-(--secondary-color)/80 '
             >
-              {hasFinePointer ? 'click' : 'tap'} to continue
+              ({hasFinePointer ? 'click' : 'tap'} or press any key to continue)
             </motion.p>
           </motion.div>
         </motion.div>
@@ -135,4 +177,3 @@ export default function StreakMilestoneOverlay({
     </AnimatePresence>
   );
 }
-

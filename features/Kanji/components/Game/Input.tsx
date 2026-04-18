@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import useKanjiStore, { IKanjiObj } from '@/features/Kanji/store/useKanjiStore';
 import { useClick, useCorrect, useError } from '@/shared/hooks/generic/useAudio';
 // import GameIntel from '@/shared/ui-composite/Game/GameIntel';
-import { useStopwatch } from 'react-timer-hook';
 import { useStatsStore } from '@/features/Progress';
 import { useShallow } from 'zustand/react/shallow';
 import Stars from '@/shared/ui-composite/Game/Stars';
@@ -73,7 +72,8 @@ const KanjiInputGame = ({
 
   const isGlassMode = useThemePreferences().isGlassMode;
 
-  const speedStopwatch = useStopwatch({ autoStart: false });
+  const answerStartTimeRef = useRef<number | null>(null);
+  const elapsedTimeMsRef = useRef(0);
 
   const { playClick } = useClick();
   const { playCorrect } = useCorrect();
@@ -118,6 +118,26 @@ const KanjiInputGame = ({
 
   const [displayAnswerSummary, setDisplayAnswerSummary] = useState(false);
   const [promptSequence, setPromptSequence] = useState(0);
+  const pauseTimer = () => {
+    if (answerStartTimeRef.current !== null) {
+      elapsedTimeMsRef.current += performance.now() - answerStartTimeRef.current;
+      answerStartTimeRef.current = null;
+    }
+  };
+  const getElapsedTimeMs = () => {
+    if (answerStartTimeRef.current !== null) {
+      return elapsedTimeMsRef.current + (performance.now() - answerStartTimeRef.current);
+    }
+    return elapsedTimeMsRef.current;
+  };
+  const resetTimer = () => {
+    answerStartTimeRef.current = null;
+    elapsedTimeMsRef.current = 0;
+  };
+  const startTimer = () => {
+    answerStartTimeRef.current = performance.now();
+    elapsedTimeMsRef.current = 0;
+  };
   const [feedback, setFeedback] = useState<React.ReactElement>(
     <>{'feedback ~'}</>,
   );
@@ -159,8 +179,8 @@ const KanjiInputGame = ({
   }, [bottomBarState]);
 
   useEffect(() => {
-    if (isHidden) speedStopwatch.pause();
-  }, [isHidden, speedStopwatch]);
+    if (isHidden) pauseTimer();
+  }, [isHidden]);
 
   if (!selectedKanjiObjs || selectedKanjiObjs.length === 0) {
     return null;
@@ -201,11 +221,11 @@ const KanjiInputGame = ({
   };
 
   const handleCorrectAnswer = (userInput: string) => {
-    speedStopwatch.pause();
-    const answerTimeMs = speedStopwatch.totalMilliseconds;
+    pauseTimer();
+    const answerTimeMs = getElapsedTimeMs();
     addCorrectAnswerTime(answerTimeMs / 1000);
     recordAnswerTime(answerTimeMs);
-    speedStopwatch.reset();
+    resetTimer();
     setCurrentKanjiObj(correctKanjiObj as IKanjiObj);
 
     playCorrect();
@@ -298,8 +318,7 @@ const KanjiInputGame = ({
     generateNewCharacter();
     setPromptSequence(prev => prev + 1);
     setBottomBarState('check');
-    speedStopwatch.reset();
-    speedStopwatch.start();
+    startTimer();
   };
 
   const gameMode = isReverse ? 'reverse input' : 'input';

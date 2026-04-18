@@ -24,7 +24,6 @@ import { ReactNode, useEffect, useRef, memo, useState } from 'react';
 import { useInputPreferences } from '@/features/Preferences';
 import { removeLocaleFromPath } from '@/shared/utils/pathUtils';
 import type { Experiment } from '@/shared/data/experiments';
-import { ActionButton } from '@/shared/ui/components/ActionButton';
 import AuroraText from '@/shared/ui/components/magicui/AuroraText';
 
 const SIDEBAR_SECTION_STORAGE_PREFIX = 'sidebar-collapsible-';
@@ -141,7 +140,7 @@ const NavLink = memo(
 
     const baseClasses = clsx(
       'flex items-center gap-2 rounded-2xl transition-all duration-250',
-      isMain ? 'text-2xl' : 'text-base',
+      isMain ? 'text-2xl' : 'text-sm',
       'max-lg:justify-center max-lg:px-3 max-lg:py-2 lg:w-full lg:px-4 lg:py-2',
       !isMain && 'max-lg:hidden',
     );
@@ -150,7 +149,17 @@ const NavLink = memo(
 
     const renderIconGlyph = (className?: string): ReactNode => {
       if (item.charIcon) {
-        return <span className={className}>{item.charIcon}</span>;
+        return (
+          <span
+            className={clsx(
+              'inline-flex items-center justify-center leading-none',
+              !isMain && 'text-sm',
+              className,
+            )}
+          >
+            {item.charIcon}
+          </span>
+        );
       }
 
       if (Icon) {
@@ -158,6 +167,7 @@ const NavLink = memo(
           <Icon
             className={clsx(
               'shrink-0',
+              !isMain && 'h-4 w-4',
               (animateIconWhenInactive ?? item.animateWhenInactive) &&
                 !isActive &&
                 !(isDesktopCollapsed && isMain) &&
@@ -220,7 +230,7 @@ const NavLink = memo(
             onClick={onClick}
             className={clsx(
               'relative z-10 flex items-center gap-2 rounded-2xl',
-              isMain ? 'text-2xl' : 'text-base',
+              isMain ? 'text-2xl' : 'text-sm',
               'max-lg:justify-center max-lg:px-3 lg:w-full lg:px-4',
               isDesktopCollapsed && isMain && 'lg:justify-center lg:px-3',
               paddingClasses,
@@ -250,40 +260,6 @@ const NavLink = memo(
             </span>
           </Link>
         </div>
-      );
-    }
-
-    // Active state with ActionButton style (non-sliding)
-    if (isActive) {
-      return (
-        <Link
-          href={item.href}
-          prefetch
-          onClick={onClick}
-          className='w-full max-lg:contents'
-        >
-          <ActionButton
-            borderBottomThickness={6}
-            borderRadius='xl'
-            className={clsx(
-              'motion-safe:animate-float flex items-center gap-2 [--float-distance:-3px]',
-              isMain ? 'text-2xl' : 'text-base',
-              'max-lg:justify-center max-lg:px-3 max-lg:py-2 lg:w-full lg:px-4 lg:py-2',
-              isDesktopCollapsed && isMain && 'lg:justify-center lg:px-3',
-              !isMain && 'max-lg:hidden',
-            )}
-          >
-            {renderIcon()}
-            <span
-              className={clsx(
-                isMain && 'max-lg:hidden',
-                isMain && isDesktopCollapsed && 'lg:hidden',
-              )}
-            >
-              {item.label}
-            </span>
-          </ActionButton>
-        </Link>
       );
     }
 
@@ -337,9 +313,9 @@ const SectionHeader = ({
         className='group mt-2 mb-2 flex w-full cursor-pointer items-center gap-2 px-4 text-base text-(--main-color) uppercase opacity-70 transition-opacity hover:opacity-100 max-lg:hidden'
       >
         {isExpanded ? (
-          <ChevronDown className='h-5 w-5 text-(--border-color) transition-colors duration-300 group-hover:text-(--main-color)' />
+          <ChevronDown className='h-4 w-4 text-(--border-color) transition-colors duration-300 group-hover:text-(--main-color)' />
         ) : (
-          <ChevronRight className='h-5 w-5 text-(--border-color) transition-colors duration-300 group-hover:text-(--main-color)' />
+          <ChevronRight className='h-4 w-4 text-(--border-color) transition-colors duration-300 group-hover:text-(--main-color)' />
         )}
         <span className='hidden h-7 w-7 shrink-0 items-center justify-center rounded-lg border-b-4 border-(--secondary-color-accent) bg-(--secondary-color) text-(--background-color) transition-colors duration-300 group-hover:border-(--main-color-accent) group-hover:bg-(--main-color) lg:flex'>
           <Icon className='h-4 w-4 text-(--background-color)' />

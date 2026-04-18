@@ -570,8 +570,8 @@
   "english": "Shishishi! (alt wording 30) (alt wording 82)",
   "anime": "One Piece",
   "character": "Monkey D. Luffy"
-}
-]
+},
+{
     "japanese": "やれやれだぜ。",
     "romaji": "Yare yare da ze.",
     "english": "Good grief.",
@@ -627,11 +627,18 @@
     "anime": "JoJo's Bizarre Adventure: Stardust Crusaders",
     "character": "DIO"
   },
-{
-  "japanese": "シシシシシ",
-  "romaji": "Shishishishi",
-  "english": "Shishishi! (alt wording 30) (alt wording 82)",
-  "anime": "One Piece",
-  "character": "Monkey D. Luffy"
-}
+  {
+    "japanese": "シシシシシ",
+    "romaji": "Shishishishi",
+    "english": "Shishishi! (alt wording 30) (alt wording 82)",
+    "anime": "One Piece",
+    "character": "Monkey D. Luffy"
+  },
+  {
+    "japanese": "逃げちゃダメだ!",
+    "romaji": "Nigeccha dame da!",
+    "english": "I mustn't run away! (alt wording 48)",
+    "anime": "Neon Genesis Evangelion",
+    "character": "Shinji Ikari"
+  }
 ]

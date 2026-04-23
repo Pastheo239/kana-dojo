@@ -2,8 +2,6 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import {
   CircleCheck,
-  CircleX,
-  CircleArrowRight,
   RotateCcw,
   Flag,
 } from 'lucide-react';
@@ -121,7 +119,21 @@ export const GameBottomBar = ({
             )
           )}
           {isWrong && (
-            <CircleX className='h-10 w-10 text-(--main-color) sm:h-12 sm:w-12' />
+            <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-(--main-color) bg-(--main-color) sm:h-12 sm:w-12'>
+              <svg
+                className='h-6 w-6 text-(--background-color) sm:h-8 sm:w-8'
+                fill='none'
+                viewBox='0 0 24 24'
+                stroke='currentColor'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={3}
+                  d='M6 6l12 12M18 6L6 18'
+                />
+              </svg>
+            </div>
           )}
           <p className='flex flex-col'>
             <span className='text-lg text-(--secondary-color) sm:text-xl'>
@@ -177,7 +189,9 @@ export const GameBottomBar = ({
             onClick={onAction}
           >
             {showRetryButton ? (
-              <RotateCcw className='h-8 w-8' />
+              <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-(--background-color) bg-(--background-color)'>
+                <RotateCcw className='h-5 w-5 text-(--main-color)' />
+              </div>
             ) : showNextButton ? (
               USE_NEW_CHECK_ICON ? (
                 <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-(--background-color) bg-(--background-color)'>
